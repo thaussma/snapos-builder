@@ -26,12 +26,11 @@ RUN apt-get update && apt-get install -y -q \
     tar \
     unzip \
     wget \
-    ccache
+    ccache \
+    git
 
 RUN sed -i "s/^# en_US.UTF-8/en_US.UTF-8/" /etc/locale.gen && locale-gen && update-locale LANG=en_US.UTF-8
 
-RUN adduser --disabled-password --gecos "" builder
-USER builder
 WORKDIR /build
 COPY Makefile Makefile
 

@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  snapos-builder:
+    build: docker/
+    volumes:
+     - ./build/output:/build/output
+     - ./build/cache:/build/cache
+     - ./build/download:/build/download
