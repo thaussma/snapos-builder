@@ -25,15 +25,15 @@ build: conf
 menuconf: conf
 	$(MAKE) -C buildroot menuconfig
 
-conf: buildroot/ snapos/
+conf: snapos/buildroot-external
 	$(MAKE) -C buildroot ${BR_TARGET}
 
-snapos/: buildroot/
+snapos/buildroot-external: buildroot/Makefile
 	-git clone --depth 1 --branch ${SNAPOS_VERSION}  https://github.com/thaussma/snapos snapos
 	cd snapos && git pull
 
-buildroot/:
+buildroot/Makefile:
 	wget -qO- http://buildroot.org/downloads/${BR_NAME}.tar.gz | tar xz
 	mkdir -p buildroot
 	mv ${BR_NAME}/* buildroot/
-	rmdir ${BR_NAME}
+	rm -rf ${BR_NAME}
