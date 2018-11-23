@@ -4,6 +4,8 @@ services:
   snapos-builder:
     build: docker/
     volumes:
+     - ./build/buildroot:/build/buildroot
+     - ./build/snapos:/build/snapos
      - ./build/output:/build/output
      - ./build/cache:/build/cache
      - ./build/download:/build/download

@@ -4,13 +4,13 @@ SNAPOS_VERSION=raspi0w
 BR_VERSION=2018.08.2
 BR_TARGET=snapos_rpi0w_defconfig
 
-BR_NAME=buildroot-${BR_VERSION}
-SNAPOS_NAME=snapos-${SNAPOS_VERSION}
-
-BR2_EXTERNAL=${SNAPOS_NAME}/buildroot-external
+BR2_EXTERNAL=/build/snapos/buildroot-external
 BR2_DL_DIR=/build/download
 BR2_CCACHE_DIR=/build/cache
 O=/build/output
+
+
+BR_NAME=buildroot-${BR_VERSION}
 
 export BR2_EXTERNAL
 export BR2_DL_DIR
@@ -20,16 +20,20 @@ export O
 all: conf build
 
 build: conf
-	$(MAKE) -C ${BR_NAME}
+	$(MAKE) -C buildroot
 
 menuconf: conf
-	$(MAKE) -C ${BR_NAME} menuconfig
+	$(MAKE) -C buildroot menuconfig
 
-conf: ${BR_NAME}/ ${BR_NAME}/${SNAPOS_NAME}/
-	$(MAKE) -C ${BR_NAME}  ${BR_TARGET}
+conf: buildroot/ snapos/
+	$(MAKE) -C buildroot ${BR_TARGET}
 
-${BR_NAME}/${SNAPOS_NAME}/: ${BR_NAME}/
-	cd ${BR_NAME} && git clone --depth 1 --branch ${SNAPOS_VERSION}  https://github.com/thaussma/snapos ${SNAPOS_NAME}
+snapos/: buildroot/
+	-git clone --depth 1 --branch ${SNAPOS_VERSION}  https://github.com/thaussma/snapos snapos
+	cd snapos && git pull
 
-${BR_NAME}/:
+buildroot/:
 	wget -qO- http://buildroot.org/downloads/${BR_NAME}.tar.gz | tar xz
+	mkdir -p buildroot
+	mv ${BR_NAME}/* buildroot/
+	rmdir ${BR_NAME}
